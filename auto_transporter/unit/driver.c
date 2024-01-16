@@ -25,3 +25,11 @@ void driver_stop(void) {
   ev3_motor_stop(left_wheel, true);
   ev3_motor_stop(right_wheel, true);
 }
+
+void driver_back(void) {
+
+}
+
+void driver_spin(void) {
+  
+}
