@@ -64,40 +64,17 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
-  // ここまで確認済み
-
-
-  case P_MOVING1:
-    if( p_is_entry ) {
-      p_is_entry = false;
-      p_is_do = true;
-    }
-    if( p_is_do ) {
-      line_tracer_run();
-      p_is_do = false;
-      p_is_exit = true;
-    }
-    if( p_is_exit ) {
-      line_tracer_stop();
-      p_state = P_WAIT_FOR_LOADING2;
-      p_is_exit = false;
-      p_is_entry = true;
-    }
-    break;
   case P_TRANSPORTING1:
     if( p_is_entry ) {
       p_is_entry = false;
       p_is_do = true;
     }
     if( p_is_do ) {
-      while(linemon_is_online()) {
+      while(!wall_detector_is_detected()) {
         line_tracer_run();
-        if(wall_detector_is_detected()) {
-          p_is_do = false;
-          p_is_exit = true;
-          break;
-        }      
       }
+      p_is_do = false;
+      p_is_exit = true;
     }
     if( p_is_exit ) {
       line_tracer_stop();
@@ -128,20 +105,39 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
+  // 確認済み
+  case P_MOVING1:
+    if( p_is_entry ) {
+      p_is_entry = false;
+      p_is_do = true;
+    }
+    if( p_is_do ) {
+      while(!wall_detector_is_detected()){
+        line_tracer_run();
+      }
+      if(wall_detector_is_detected()) {
+        p_is_do = false;
+        p_is_exit = true;
+      }
+    }
+    if( p_is_exit ) {
+      line_tracer_stop();
+      p_state = P_WAIT_FOR_LOADING2;
+      p_is_exit = false;
+      p_is_entry = true;
+    }
+    break;
   case P_MOVING2:
     if ( p_is_entry ) {
       p_is_entry = false;
       p_is_do = true;
     }
     if ( p_is_do ) {
-      while(linemon_is_online()) {
+      while(!wall_detector_is_detected()) {
         line_tracer_run();
-        if (!wall_detector_is_detected()) {
-          p_state = P_MOVING3;
-          p_is_do = false;
-          break;
-        }
       }
+      p_state = P_MOVING3;
+      p_is_do = false;
     }
     break;
   case P_MOVING3:
@@ -150,14 +146,11 @@ void porter_transport(void) {
       p_is_do = true;
     }
     if( p_is_do ) {
-      while(linemon_is_online()) {
+      while(!wall_detector_is_detected()) {
         line_tracer_run();
-        if (wall_detector_is_detected()) {
-          p_is_do = false;
-          p_is_exit = true;
-          break;
-        }
       }
+      p_is_do = false;
+      p_is_exit = true;
     }
     if( p_is_exit ) {
       line_tracer_stop();
@@ -193,14 +186,11 @@ void porter_transport(void) {
       p_is_do = true;
     }
     if( p_is_do ) {
-      while(linemon_is_online()) {
-        line_tracer_run();
-        if (!bumper_is_pushed()) {
-          p_is_do = false;
-          p_is_entry = true;
-          p_state = P_TRANSPORTING3;
-          break;
-        }
+      line_tracer_run();
+      if (!bumper_is_pushed()) {
+        p_is_do = false;
+        p_is_entry = true;
+        p_state = P_TRANSPORTING3;
       }
     }
     break;
@@ -210,13 +200,10 @@ void porter_transport(void) {
       p_is_do = true;
     }
     if( p_is_do ) {
-      while(linemon_is_online()) {
-        line_tracer_run();
-        if (bumper_is_pushed()) {
-          p_is_do = false;
-          p_is_exit = true;
-          break;
-        }
+      line_tracer_run();
+      if (bumper_is_pushed()) {
+        p_is_do = false;
+        p_is_exit = true;
       }
     }
     if( p_is_exit ) {
@@ -236,7 +223,7 @@ void porter_transport(void) {
     }
     break;
   case P_STOPPED:
-    return 0;
+    return;
     break;
   }
 }

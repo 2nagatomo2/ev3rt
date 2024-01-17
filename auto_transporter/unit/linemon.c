@@ -1,7 +1,7 @@
 #include "linemon.h"
 
 const int linemon_sensor = EV3_PORT_3;
-#define LINEMON_THRESHOLD 50
+#define LINEMON_THRESHOLD 20
 int lm_threshold = LINEMON_THRESHOLD;
 
 void linemon_config(void) {
@@ -9,5 +9,5 @@ void linemon_config(void) {
 }
 
 bool linemon_is_online(void) {
-  return ev3_color_sensor_get_reflect(linemon_sensor) < LINEMON_THRESHOLD;
+  return ev3_color_sensor_get_reflect(linemon_sensor) < lm_threshold;
 }

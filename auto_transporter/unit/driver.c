@@ -3,7 +3,7 @@
 const int left_wheel = EV3_PORT_A;
 const int right_wheel = EV3_PORT_C;
 
-#define DR_POWER 40
+#define DR_POWER 20
 int dr_power = DR_POWER;
 
 void driver_config(void) {
@@ -31,5 +31,5 @@ void driver_back(void) {
 }
 
 void driver_spin(void) {
-  
+
 }

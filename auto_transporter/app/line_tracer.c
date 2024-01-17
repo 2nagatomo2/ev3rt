@@ -8,9 +8,8 @@ void line_tracer_config(void) {
 void line_tracer_run(void) {
   if( linemon_is_online() ) {
     driver_turn_left();
-    driver_turn_right();
   } else {
-    line_tracer_stop();
+    driver_turn_right();
   }
 }
 
