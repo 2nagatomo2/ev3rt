@@ -6,4 +6,5 @@
 
 extern void direction_changer_config(void);
 extern void direction_changer_run(void);
-extern bool direction_changer_is_online(void);
+extern bool direction_changer_is_changed(void);
+extern void direction_changer_stop(void);
