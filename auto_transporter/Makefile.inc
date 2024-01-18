@@ -5,9 +5,9 @@ SRCLANG := c
 APPL_ASMOBJS :=
 ifdef USE_CXX
 	APPL_CXXOBJS +=
-	APPL_COBJS += porter.o line_tracer.o linemon.o driver.o util.o timer.o bumper.o carrier.o wall_detector.o
+	APPL_COBJS += porter.o direction_changer.o line_tracer.o linemon.o driver.o util.o timer.o bumper.o carrier.o wall_detector.o
 else
-	APPL_COBJS += porter.o line_tracer.o linemon.o driver.o util.o timer.o bumper.o carrier.o wall_detector.o
+	APPL_COBJS += porter.o direction_changer.o line_tracer.o linemon.o driver.o util.o timer.o bumper.o carrier.o wall_detector.o
 endif
 
 APPL_DIRS += $(mkfile_path)app $(mkfile_path)unit $(mkfile_path)/../util

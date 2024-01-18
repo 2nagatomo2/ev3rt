@@ -5,13 +5,14 @@ typedef enum { P_INIT,
   P_MOVING1, P_WAIT_FOR_LOADING2, P_WAIT_FOR_START3,
   P_MOVING2, P_MOVING3,
   P_TRANSPORTING2, P_TRANSPORTING3, P_WAIT_FOR_UNLOADING2, P_SPINNING, P_MOVING4,
-  P_STOPPED
+  P_STOPPED, P_TEST
 } porter_state;
 porter_state p_state = P_INIT;
 
 void porter_config(void) {
   init_f("transporter");
   line_tracer_config();
+  direction_changer_config();
   carrier_config();
   bumper_config();
   wall_detector_config();
@@ -38,6 +39,7 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
+  // 確認済み
   case P_WAIT_FOR_LOADING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -53,6 +55,7 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
+  // 確認済み
   case P_WAIT_FOR_START1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -64,13 +67,14 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
+  // 確認済み（何度もやれば）
   case P_TRANSPORTING1:
     if( p_is_entry ) {
       p_is_entry = false;
       p_is_do = true;
     }
     if( p_is_do ) {
-      while(!wall_detector_is_detected()) {
+      while( !wall_detector_is_detected() ) {
         line_tracer_run();
       }
       p_is_do = false;
@@ -85,6 +89,7 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
+  // 確認済み
   case P_WAIT_FOR_UNLOADING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -96,16 +101,17 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
+  // 確認済み
   case P_WAIT_FOR_START2:
     if ( p_is_entry ) {
       p_is_entry = false;
     }
-    if (bumper_is_pushed()) {
+    if ( bumper_is_pushed() ) {
       p_state = P_MOVING2;
       p_is_entry = true;
     }
     break;
-  // 確認済み
+  // 確認済み（何度もやれば）
   case P_MOVING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -115,10 +121,8 @@ void porter_transport(void) {
       while(!wall_detector_is_detected()){
         line_tracer_run();
       }
-      if(wall_detector_is_detected()) {
-        p_is_do = false;
-        p_is_exit = true;
-      }
+      p_is_do = false;
+      p_is_exit = true;
     }
     if( p_is_exit ) {
       line_tracer_stop();
@@ -127,19 +131,47 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
+  // 確認済み
+  case P_WAIT_FOR_LOADING2:
+    if( p_is_exit ) {
+      p_is_entry = false;
+    }
+    if( bumper_is_pushed() ) {
+      p_state = P_MOVING2;
+      p_is_entry = true;
+    }
+    if( carrier_cargo_is_loaded() ) {
+      p_state = P_WAIT_FOR_START3;
+      p_is_entry = true;
+    }
+    break;
+  case P_WAIT_FOR_START3:
+    if( p_is_entry ) {
+      p_is_entry = false;
+    }
+    if( bumper_is_pushed() ) {
+      p_state = P_TRANSPORTING2;
+      p_is_entry = true;
+    }
+    break;
+  // 確認済み
   case P_MOVING2:
     if ( p_is_entry ) {
       p_is_entry = false;
       p_is_do = true;
     }
     if ( p_is_do ) {
-      while(!wall_detector_is_detected()) {
+      while(wall_detector_is_detected()) {
         line_tracer_run();
       }
-      p_state = P_MOVING3;
-      p_is_do = false;
+      if( !wall_detector_is_detected() ) {
+        p_state = P_MOVING3;
+        p_is_do = false;
+        p_is_entry = true;
+      }
     }
     break;
+  // 確認済み
   case P_MOVING3:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -155,31 +187,11 @@ void porter_transport(void) {
     if( p_is_exit ) {
       line_tracer_stop();
       p_is_exit = false;
+      p_is_entry = true;
       p_state = P_STOPPED;
     }
     break;
-  case P_WAIT_FOR_LOADING2:
-    if( p_is_exit ) {
-      p_is_entry = false;
-    }
-    if(bumper_is_pushed()) {
-      p_state = P_MOVING2;
-      p_is_entry = true;
-    }
-    if(carrier_cargo_is_loaded()) {
-      p_state = P_WAIT_FOR_START3;
-      p_is_entry = true;
-    }
-    break;
-  case P_WAIT_FOR_START3:
-    if( p_is_entry ) {
-      p_is_entry = false;
-    }
-    if(bumper_is_pushed()) {
-      p_state = P_TRANSPORTING2;
-      p_is_entry = true;
-    }
-    break;
+  // 確認済み
   case P_TRANSPORTING2:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -194,6 +206,7 @@ void porter_transport(void) {
       }
     }
     break;
+  // 確認済み
   case P_TRANSPORTING3:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -213,6 +226,7 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
+  // 確認済み
   case P_WAIT_FOR_UNLOADING2:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -222,7 +236,35 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
+  // 確認済み（一定の条件下で）
+  case P_SPINNING:
+    if( p_is_entry ) {
+      p_is_entry = false;
+    }
+    direction_changer_run();
+    p_is_entry = true;
+    if( p_is_entry ) {
+      p_state = P_MOVING4;
+    }
+    break;
+  // 確認済み  
+  case P_MOVING4:
+    if( p_is_entry ) {
+      p_is_entry = false;
+    }
+    while( !bumper_is_pushed() ) {
+      line_tracer_run();
+    }
+    p_is_entry = true;
+    if( p_is_entry ) {
+      line_tracer_stop();
+      p_state = P_STOPPED;
+    }
+    break;
   case P_STOPPED:
+    if( p_is_entry ) {
+      p_is_entry = false;
+    }
     return;
     break;
   }
