@@ -10,12 +10,12 @@ bool direction_changer_is_changed(void) {
 }
 
 void direction_changer_run(void) {
-  timer_start(1200 * 1000);
+  timer_start(500 * 1000);
   while( !timer_is_timedout() ) {
     driver_back();
   }
   timer_stop();
-  timer_start(1500 * 1000);
+  timer_start(1000 * 1000);
   while( !timer_is_timedout() ) {
     driver_spin();
   }

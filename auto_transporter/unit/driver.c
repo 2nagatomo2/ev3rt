@@ -32,5 +32,5 @@ void driver_back(void) {
 }
 
 void driver_spin(void) {
-  driver_turn_left();
+  driver_turn_right();
 }

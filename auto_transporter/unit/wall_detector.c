@@ -1,7 +1,7 @@
 #include "wall_detector.h"
 
 const int wall_detector_sensor = EV3_PORT_4;
-#define WALL_DETECTOR_THRESHOLD 10
+#define WALL_DETECTOR_THRESHOLD 12
 int wd_threshold = WALL_DETECTOR_THRESHOLD;
 
 void wall_detector_config(void) {

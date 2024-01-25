@@ -37,7 +37,6 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_LOADING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -53,7 +52,6 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_START1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -65,7 +63,6 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
-  // 確認済み（何度もやれば）
   case P_TRANSPORTING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -79,7 +76,6 @@ void porter_transport(void) {
       p_state = P_WAIT_FOR_UNLOADING1;
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_UNLOADING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -95,7 +91,6 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_START2:
     if ( p_is_entry ) {
       p_is_entry = false;
@@ -105,7 +100,6 @@ void porter_transport(void) {
       p_is_entry = true;
     }
     break;
-  // 確認済み（何度もやれば）
   case P_MOVING1:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -119,7 +113,6 @@ void porter_transport(void) {
       line_tracer_stop();
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_LOADING2:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -146,12 +139,11 @@ void porter_transport(void) {
     if( p_is_entry ){
     }
     break;
-  // 確認済み
   case P_MOVING2:
     if ( p_is_entry ) {
       p_is_entry = false;
     }
-    while(wall_detector_is_detected()) {
+    while( wall_detector_is_detected() ) {
       line_tracer_run();
     }
     if( !wall_detector_is_detected() ) {
@@ -160,12 +152,11 @@ void porter_transport(void) {
     if( p_is_entry ){
     }
     break;
-  // 確認済み
   case P_MOVING3:
     if( p_is_entry ) {
       p_is_entry = false;
     }
-    while(!wall_detector_is_detected()) {
+    while( !wall_detector_is_detected() ) {
       line_tracer_run();
     }
     p_is_entry = true;
@@ -174,7 +165,6 @@ void porter_transport(void) {
       p_state = P_STOPPED;
     }
     break;
-  // 確認済み
   case P_TRANSPORTING2:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -187,7 +177,6 @@ void porter_transport(void) {
     if( p_is_entry ) {
     }
     break;
-  // 確認済み
   case P_TRANSPORTING3:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -201,7 +190,6 @@ void porter_transport(void) {
       p_state = P_WAIT_FOR_UNLOADING2;
     }
     break;
-  // 確認済み
   case P_WAIT_FOR_UNLOADING2:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -213,7 +201,7 @@ void porter_transport(void) {
     if( p_is_entry ){
     }
     break;
-  // 確認済み（一定の条件下で）
+  // 確認
   case P_SPINNING:
     if( p_is_entry ) {
       p_is_entry = false;
@@ -225,7 +213,6 @@ void porter_transport(void) {
       direction_changer_stop();
     }
     break;
-  // 確認済み  
   case P_MOVING4:
     if( p_is_entry ) {
       p_is_entry = false;
